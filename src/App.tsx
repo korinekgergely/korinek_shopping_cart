@@ -1,26 +1,60 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useReducer } from 'react'
+import './App.css'
+import CartDisplay from './components/CartDisplay'
+import InputFields from './components/InputFields'
+import { Product, CartAction } from './TS.types'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const initialState: Product[] = []
+
+const reducer = (state: Product[], action: CartAction) => {
+  switch (action.actionType) {
+    case 'initState':
+      return [...action.start]
+
+    case 'incrementProduct':
+      return state.map((product: Product) => {
+        if (product.name === action.value) {
+          const currVolume = product.volume
+          return { ...product, volume: currVolume + 1 }
+        }
+        return product
+      })
+
+    case 'deleteProduct':
+      return state.map((product: Product) => {
+        if (product.name === action.value) {
+          return { ...product, volume: 0 }
+        }
+        return product
+      })
+
+    default:
+      return state
+  }
 }
 
-export default App;
+function App() {
+  const [state, dispatch] = useReducer(reducer, initialState)
+
+  const getData = (startData: Product[]) => {
+    dispatch({ actionType: 'initState', start: startData })
+  }
+  const addItem = (itemName: string) => {
+    dispatch({ actionType: 'incrementProduct', value: itemName })
+  }
+  const removeItem = (itemName: string) => {
+    dispatch({ actionType: 'deleteProduct', value: itemName })
+  }
+  return (
+    <div className='App'>
+      <div className='ramen'>
+        <CartDisplay dataSource={state} removeItem={removeItem} />
+      </div>
+      <div className='ramen'>
+        <InputFields getData={getData} addItem={addItem} />
+      </div>
+    </div>
+  )
+}
+
+export default App

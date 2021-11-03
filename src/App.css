@@ -1,38 +1,95 @@
 .App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  justify-content: space-between;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
-.App-link {
-  color: #61dafb;
+.ramen {
+  padding: 20px;
+  width: 50%;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.productButton,
+.productButtonContainer {
+  margin: 5px 0;
+}
+.mainInputTextarea {
+  width: 100%;
+}
+
+.productButton {
+    display: flex;
+    justify-content: space-between;
   }
-  to {
-    transform: rotate(360deg);
-  }
+
+.tableHeader {
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 50px;
+  width: 100%;
+  color: #c0c0c0;
+  font-size: 1.1em;
+  border-bottom: 2px solid black;
+}
+
+.tableBody {
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 50px;
+  width: 100%;
+  margin: 5px 0;
+  
+}
+
+.tableBody div {
+  padding: 5px;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.alignRight {
+  text-align: right;
+}
+
+.inputArea{
+    background-color: lightgrey;
+    padding: 20px;
+}
+
+.fullResult{
+    font-size: 1.3em;
+    border-top: 2px solid black;
+}
+
+button {
+	box-shadow:inset 0px 1px 0px 0px #97c4fe;
+	background:linear-gradient(to bottom, #3d94f6 5%, #1e62d0 100%);
+	background-color:#3d94f6;
+	border-radius:6px;
+	border:1px solid #337fed;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:15px;
+	font-weight:bold;
+	padding:6px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #1570cd;
+    text-align: center;
+}
+button:hover {
+	background:linear-gradient(to bottom, #1e62d0 5%, #3d94f6 100%);
+	background-color:#1e62d0;
+}
+button:active {
+	position:relative;
+	top:1px;
+}
+
+.errorField{
+    color: red;
+    padding: 5px;
+    margin: 5px 0;
+    border:2px solid red;
 }
