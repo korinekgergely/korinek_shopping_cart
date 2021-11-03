@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { setUnique } from '../utils/ArrayUtils'
 import { InputFieldsProps, Product } from './../TS.types'
 import BasicInfo from './BasicInfo'
-import {EVERY_SECOND, ELEMENT_MISSING} from './../Error.consts'
+import { EVERY_SECOND, ELEMENT_MISSING } from './../Error.consts'
 
 const InputFields: React.FC<InputFieldsProps> = (props) => {
   const { getData, addItem } = props
@@ -14,49 +14,72 @@ const InputFields: React.FC<InputFieldsProps> = (props) => {
     getData(filtered)
   }, [filtered])
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    seterrors('')
-    const valueOfTextarea: string =
-      event.currentTarget.inputProducts.value.trim()
-    let valueOfTextareaTrimmed
-
-    // removes the last char if that is a comma
-    if (valueOfTextarea.slice(-1) === ',') {
-      valueOfTextareaTrimmed = valueOfTextarea.slice(0, -1)
+  const removeLastComma: (inputstring: string) => string = (
+    inputstring: string
+  ) => {
+    if (inputstring.slice(-1) === ',') {
+      return inputstring.slice(0, -1)
     } else {
-      valueOfTextareaTrimmed = valueOfTextarea
+      return inputstring
     }
+  }
 
-    // convert to array
-    const collectionOfProductsArr = valueOfTextareaTrimmed.split(',')
-
-    // check if right length
-    if (collectionOfProductsArr.length % 2 !== 0) {
+  const checkMissingElement: (inputArr: string[]) => void = (
+    inputArr: string[]
+  ) => {
+    if (inputArr.length % 2 !== 0) {
       seterrors(ELEMENT_MISSING)
     }
+  }
 
-    // converts every second value to num
-    const convertedNumsArr = collectionOfProductsArr.map(
-      (item: any, index: number) => {
-        if (index % 2 !== 0) {
-          item = parseFloat(item)
-          if (isNaN(item)) {
-            seterrors(EVERY_SECOND)
-          }
+  const convertEverySecondToNum: (inputArr: string[]) => any[] = (
+    inputArr: string[]
+  ) => {
+    return inputArr.map((item: any, index: number) => {
+      if (index % 2 !== 0) {
+        item = parseFloat(item)
+        if (isNaN(item)) {
+          seterrors(EVERY_SECOND)
         }
-        return item
       }
-    )
+      return item
+    })
+  }
 
-    //convert final array to obj
-    const len = convertedNumsArr.length / 2
+  const convertArrToObj: (inputArr: any[] ) => void = (
+    inputArr: any[] 
+  ) => {
+    const len = inputArr.length / 2
     dataSource = [] as Product[]
     for (let index = 0; index < len; index++) {
-      const l = convertedNumsArr.splice(0, 2)
+      const l = inputArr.splice(0, 2)
       dataSource.push({ name: l[0].trim(), price: l[1], volume: 0 })
     }
     setfiltered(setUnique(dataSource))
+  }
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    // start pharsing. reset errors
+    seterrors('')
+
+    // remove spaces from start and end of textarea string remove the last comma
+    const valueOfTextarea: string = removeLastComma(
+      event.currentTarget.inputProducts.value.trim()
+    )
+
+    //  convert to array
+    const collectionOfProductsArr:string[] = valueOfTextarea.split(',')
+
+    // check if right length and push error if not valid
+    // no return value, thats whu not assigned as const
+    checkMissingElement(collectionOfProductsArr)
+
+    // converts every second value to num
+    const convertedNumsArr = convertEverySecondToNum(collectionOfProductsArr)
+
+    //convert final array to array of objects, save into state, no return value. This is our final datasource
+    convertArrToObj(convertedNumsArr)
   }
 
   return (
@@ -74,20 +97,23 @@ const InputFields: React.FC<InputFieldsProps> = (props) => {
       </form>
       {errors && <div className='errorField'>{errors}</div>}
 
-      <p>Press the buttons below to add product to your chart.</p>
-
-      <div className='productButtonContainer'>
-        {filtered.map((product: Product) => (
-          <div className='productButton'>
-            <button key={product.name} onClick={() => addItem(product.name)}>
-              {product.name}
-            </button>{' '}
-            <div>
-              <span>price: <strong>{product.price}</strong></span>
+      {!errors && (
+        <div className='productButtonContainer'>
+          <p>Press the buttons below to add product to your chart.</p>
+          {filtered.map((product: Product) => (
+            <div className='productButton'>
+              <button key={product.name} onClick={() => addItem(product.name)}>
+                {product.name}
+              </button>{' '}
+              <div>
+                <span>
+                  price: <strong>{product.price}</strong>
+                </span>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
