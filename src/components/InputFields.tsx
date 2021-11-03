@@ -35,6 +35,9 @@ const InputFields: React.FC<InputFieldsProps> = (props) => {
   const convertEverySecondToNum: (inputArr: string[]) => any[] = (
     inputArr: string[]
   ) => {
+    // check if right length and push error if not valid
+    // no return value, thats whu not assigned as const
+    checkMissingElement(inputArr)
     return inputArr.map((item: any, index: number) => {
       if (index % 2 !== 0) {
         item = parseFloat(item)
@@ -46,7 +49,7 @@ const InputFields: React.FC<InputFieldsProps> = (props) => {
     })
   }
 
-  const convertArrToObj: (inputArr: any[] ) => void = (
+  const convertArrToObj: (inputArr: any[]) => void = (
     inputArr: any[] 
   ) => {
     const len = inputArr.length / 2
@@ -58,6 +61,7 @@ const InputFields: React.FC<InputFieldsProps> = (props) => {
     setfiltered(setUnique(dataSource))
   }
 
+  // click on Pharse and Reset button
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     // start pharsing. reset errors
@@ -69,17 +73,13 @@ const InputFields: React.FC<InputFieldsProps> = (props) => {
     )
 
     //  convert to array
-    const collectionOfProductsArr:string[] = valueOfTextarea.split(',')
-
-    // check if right length and push error if not valid
-    // no return value, thats whu not assigned as const
-    checkMissingElement(collectionOfProductsArr)
+    const productsArrAllString:string[] = valueOfTextarea.split(',')    
 
     // converts every second value to num
-    const convertedNumsArr = convertEverySecondToNum(collectionOfProductsArr)
+    const convertedMixedArr = convertEverySecondToNum(productsArrAllString)
 
     //convert final array to array of objects, save into state, no return value. This is our final datasource
-    convertArrToObj(convertedNumsArr)
+    convertArrToObj(convertedMixedArr)
   }
 
   return (
